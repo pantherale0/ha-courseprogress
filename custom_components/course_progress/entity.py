@@ -4,14 +4,12 @@ from __future__ import annotations
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTRIBUTION, DOMAIN, NAME, VERSION
+from .const import DOMAIN, NAME, VERSION
 from .coordinator import BlueprintDataUpdateCoordinator
 
 
-class IntegrationBlueprintEntity(CoordinatorEntity):
-    """BlueprintEntity class."""
-
-    _attr_attribution = ATTRIBUTION
+class CourseProgressEntity(CoordinatorEntity):
+    """CourseProgressEntity class."""
 
     def __init__(self, coordinator: BlueprintDataUpdateCoordinator) -> None:
         """Initialize."""

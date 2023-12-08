@@ -1,0 +1,12 @@
+{
+  "domain": "course_progress",
+  "name": "Course Progress",
+  "codeowners": [
+    "@pantherale0"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/pantherale0/ha-courseprogess",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/pantherale0/ha-courseprogress/issues",
+  "version": "0.0.0"
+}

@@ -2,8 +2,9 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/ludeeus/integration_blueprint",
+                "description": "The instance is not the URL to the service, but instead the part of the url after 'https://' and before 'courseprogess.co.uk'.",
                 "data": {
+                    "instance": "Instance",
                     "username": "Username",
                     "password": "Password"
                 }
