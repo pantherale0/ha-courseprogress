@@ -12,7 +12,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from pycourseprogress import CourseProgress
 from .const import DOMAIN
-from .coordinator import BlueprintDataUpdateCoordinator
+from .coordinator import CourseProgressDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,

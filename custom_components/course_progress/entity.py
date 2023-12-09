@@ -5,13 +5,13 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, NAME, VERSION
-from .coordinator import BlueprintDataUpdateCoordinator
+from .coordinator import CourseProgressDataUpdateCoordinator
 
 
 class CourseProgressEntity(CoordinatorEntity):
     """CourseProgressEntity class."""
 
-    def __init__(self, coordinator: BlueprintDataUpdateCoordinator) -> None:
+    def __init__(self, coordinator: CourseProgressDataUpdateCoordinator) -> None:
         """Initialize."""
         super().__init__(coordinator)
         self._attr_unique_id = coordinator.config_entry.entry_id
