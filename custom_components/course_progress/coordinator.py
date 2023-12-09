@@ -39,7 +39,7 @@ class CourseProgressDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            return await self.client.async_get_data()
+            return await self.client.update()
         except HttpException as exception:
             if exception.status_code == 401 or exception.status_code == 403:
                 raise ConfigEntryAuthFailed(exception) from exception

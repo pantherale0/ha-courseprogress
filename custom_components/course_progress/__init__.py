@@ -14,7 +14,8 @@ from .const import DOMAIN
 from .coordinator import CourseProgressDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
+    Platform.CALENDAR,
+    Platform.SENSOR
 ]
 
 

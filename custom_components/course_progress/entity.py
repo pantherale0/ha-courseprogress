@@ -4,6 +4,8 @@ from __future__ import annotations
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from pycourseprogress.member import Member
+
 from .const import DOMAIN, NAME, VERSION
 from .coordinator import CourseProgressDataUpdateCoordinator
 
@@ -11,13 +13,16 @@ from .coordinator import CourseProgressDataUpdateCoordinator
 class CourseProgressEntity(CoordinatorEntity):
     """CourseProgressEntity class."""
 
-    def __init__(self, coordinator: CourseProgressDataUpdateCoordinator) -> None:
+    def __init__(self, coordinator: CourseProgressDataUpdateCoordinator, member: Member, unq_key: str) -> None:
         """Initialize."""
         super().__init__(coordinator)
-        self._attr_unique_id = coordinator.config_entry.entry_id
+        self._member: Member = member
+        self._attr_unique_id = f"{coordinator.config_entry.entry_id}_{unq_key}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, self.unique_id)},
-            name=NAME,
-            model=VERSION,
-            manufacturer=NAME,
+            identifiers={(DOMAIN, self._member.member_id)},
+            name=self._member.first_name
         )
+
+    @property
+    def unique_id(self) -> str | None:
+        return self._attr_unique_id
