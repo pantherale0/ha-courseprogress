@@ -8,7 +8,6 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from pycourseprogress import CourseProgress
 from .const import DOMAIN
@@ -22,7 +21,14 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    # TODO
+    controller = await CourseProgress.create(
+            instance=entry.data["instance"],
+            username=entry.data[CONF_USERNAME],
+            password=entry.data[CONF_PASSWORD]
+        )
+    hass.data[DOMAIN][entry.entry_id] = CourseProgressDataUpdateCoordinator(
+        hass, controller
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))

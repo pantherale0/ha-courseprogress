@@ -77,7 +77,7 @@ class CourseProgressFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _test_credentials(self, instance: str, username: str, password: str) -> None:
         """Validate credentials."""
-        client = await CourseProgress.create(
+        await CourseProgress.create(
             instance=instance,
             username=username,
             password=password
