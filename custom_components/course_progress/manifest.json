@@ -8,5 +8,8 @@
   "documentation": "https://github.com/pantherale0/ha-courseprogess",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/pantherale0/ha-courseprogress/issues",
+  "requirements": [
+    "pycourseprogress==0.0.1"
+  ],
   "version": "0.0.0"
 }
