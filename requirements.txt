@@ -2,4 +2,4 @@ colorlog==6.8.0
 homeassistant==2023.11.0
 pip>=21.0,<23.2
 ruff==0.1.7
-pycourseprogress==0.0.1
+pycourseprogress==0.0.2

@@ -9,7 +9,7 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/pantherale0/ha-courseprogress/issues",
   "requirements": [
-    "pycourseprogress==0.0.1"
+    "pycourseprogress==0.0.2"
   ],
   "version": "0.0.0"
 }
