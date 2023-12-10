@@ -5,7 +5,6 @@ from typing import Any
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import UndefinedType
 
 from pycourseprogress.member import Member
 from pycourseprogress.classes import Class

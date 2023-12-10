@@ -1,14 +1,13 @@
 """course_progress calendar."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pytz
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import UndefinedType
 
 from pycourseprogress.classes import Class
 
@@ -53,6 +52,7 @@ class MemberSessionCalendar(CalendarEntity, CourseProgressEntity):
 
     @property
     def name(self) -> str:
+        """Return the name of the entity."""
         return "Sessions"
 
     @property

@@ -6,7 +6,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from pycourseprogress.member import Member
 
-from .const import DOMAIN, NAME, VERSION
+from .const import DOMAIN
 from .coordinator import CourseProgressDataUpdateCoordinator
 
 
@@ -25,4 +25,5 @@ class CourseProgressEntity(CoordinatorEntity):
 
     @property
     def unique_id(self) -> str | None:
+        """Return the unique ID."""
         return self._attr_unique_id
