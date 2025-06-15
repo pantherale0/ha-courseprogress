@@ -1,17 +1,15 @@
-"""Sensor platform for integration_blueprint."""
 from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
-
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-from pycourseprogress.member import Member
-from pycourseprogress.classes import Class
-
+from homeassistant.helpers.device_registry import DeviceInfo
 from .const import DOMAIN
 from .coordinator import CourseProgressDataUpdateCoordinator
 from .entity import CourseProgressEntity
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 COURSE_ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
@@ -22,80 +20,66 @@ COURSE_ENTITY_DESCRIPTIONS = (
     ),
 )
 
-
 async def async_setup_entry(hass, entry, async_add_entities: AddEntitiesCallback):
-    """Set up the sensor platform."""
-    entities = []
-    coord: CourseProgressDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    for member in coord.client.members:
-        for course in member.classes:
-            for entity_description in COURSE_ENTITY_DESCRIPTIONS:
-                entities.append(
-                    CourseProgressSensor(coord, member, course, entity_description)
+    coordinator: CourseProgressDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    entities: list[SensorEntity] = []
+
+    _LOGGER.debug("sensor_percentage: Starting setup")
+
+    for member_id, member_data in coordinator.data.items():
+        name = member_data.get("member_name") or member_data.get("name") or f"Member {member_id}"
+        progress = member_data.get("progress")
+        _LOGGER.debug(f"sensor_percentage: Creating sensor for Member {member_id} ({name}) with progress: {progress}")
+
+        if progress is None:
+            _LOGGER.warning(f"sensor_percentage: Skipping member {name} — progress value missing")
+            continue
+
+        unique_key = f"{member_id}_progress"
+        for description in COURSE_ENTITY_DESCRIPTIONS:
+            entities.append(
+                CourseProgressPercentageSensor(
+                    coordinator=coordinator,
+                    member_id=member_id,
+                    progress=progress,
+                    member_name=name,
+                    unq_key=unique_key,
+                    entity_description=description,
                 )
-    async_add_entities(entities, False)
+            )
 
+    async_add_entities(entities)
+    _LOGGER.warning(f"sensor_percentage: Added {len(entities)} percentage sensors")
 
-class CourseProgressSensor(CourseProgressEntity, SensorEntity):
-    """course_progress sensor class."""
-
+class CourseProgressPercentageSensor(CourseProgressEntity, SensorEntity):
     def __init__(
         self,
         coordinator: CourseProgressDataUpdateCoordinator,
-        member: Member,
-        course: Class,
+        member_id: int,
+        progress: float,
+        member_name: str,
+        unq_key: str,
         entity_description: SensorEntityDescription,
     ) -> None:
-        """Initialize the sensor class."""
-        super().__init__(coordinator, member, f"{entity_description.key}_{course.class_id}")
-        self._course_id = course.class_id
+        super().__init__(coordinator, unq_key)
+        self._member_id = member_id
+        self._progress = progress
+        self._member_name = member_name
         self.entity_description = entity_description
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, f"member_{member_id}")},
+            name=member_name,
+            manufacturer="Course Progress",
+        )
 
     @property
-    def name(self) -> str | None:
-        """Return the name of the entity."""
-        if self.entity_description.key == "course_completion":
-            return f"{self._get_course.class_name} {self.entity_description.name}"
-
-        return super().name
+    def name(self) -> str:
+        return f"{self._member_name} Completion"
 
     @property
-    def _get_course(self) -> Class:
-        """Return the course for this entity."""
-        return self._member.get_class(self._course_id)
-
-    @property
-    def native_value(self) -> float:
-        """Return the native value of the sensor."""
-        if self.entity_description.key == "course_completion":
-            return self._calculate_course_progress
-
-    @property
-    def _calculate_course_progress(self) -> float:
-        """Calculate the course progress from the compentencies."""
-        comp_raw = self._get_course.competencies["scheme"]["tree"]["children"][0]["children"][0]
-        completed: dict = self._get_course.competencies["member"]["assessments"]["complete"]
-        completed.pop("/", None)
-        completed.pop(comp_raw["id"], None)
-        return ((len(completed))/len(comp_raw["children"])) * 100
-
-    def _convert_competencies(self) -> list:
-        """Convert competencies into a list of usable data for extra state attributes."""
-        competencies = []
-        comp_raw = self._get_course.competencies["scheme"]["tree"]["children"][0]["children"][0]
-        completed: dict = self._get_course.competencies["member"]["assessments"]["complete"]
-        for c in comp_raw["children"]:
-            title = c["content"][0]["value"]
-            id = c["id"]
-            competencies.append({
-                "title": title,
-                "completed": completed.get(id, False)
-            })
-
-        return competencies
-
+    def native_value(self) -> float | None:
+        return round(self._progress, 2)
 
     @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
-        """Return a list of extra state attributes."""
-        return {"competencies": self._convert_competencies()}
+        return {}
