@@ -11,7 +11,8 @@ from pycourseprogress.exceptions import HttpException
 
 from .const import DOMAIN, LOGGER
 
-class CourseProgressFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Course Progress."""
 
     VERSION = 1
